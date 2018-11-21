@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private Button buttonLogin;
     private Button buttonSignUp;
+    private Button buttonForgot;
     private static final String EMAIL = "email";
     CallbackManager callbackManager;
 
@@ -90,56 +91,77 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please enter email", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(!isEmailValid(email)){
+                    Toast.makeText(MainActivity.this, "Please enter valid email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (TextUtils.isEmpty(password)) {
                     //password field is empty
                     Toast.makeText(MainActivity.this, "Please enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    editTextEmail.setText(" ");
-                                    editTextPassword.setText(" ");
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
-//                                    updateUI(user);
-                                } else {
-                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(getApplicationContext(), "Registered Not Successful", Toast.LENGTH_SHORT).show();
-                                    editTextEmail.setText(" ");
-                                    editTextPassword.setText(" ");
-                                }
-                            }
-                        });
+//                mAuth.createUserWithEmailAndPassword(email, password)
+//                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                if (task.isSuccessful()) {
+//                                    editTextEmail.setText(" ");
+//                                    editTextPassword.setText(" ");
+//                                    // Sign in success, update UI with the signed-in user's information
+//                                    Log.d(TAG, "createUserWithEmail:success");
+//                                    FirebaseUser user = mAuth.getCurrentUser();
+//                                    Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
+////                                    updateUI(user);
+//                                } else {
+//                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                                    Toast.makeText(getApplicationContext(), "Registered Not Successful", Toast.LENGTH_SHORT).show();
+//                                    editTextEmail.setText(" ");
+//                                    editTextPassword.setText(" ");
+//                                }
+//                            }
+//                        });
+                sendMessage(email,password);
+
             }
         });
+
 
         buttonLogin = findViewById(R.id.loginButton);
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String email = editTextEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(email)) {
+                    //email field is empty
+                    Toast.makeText(MainActivity.this, "Please enter email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!isEmailValid(email)){
+                    Toast.makeText(MainActivity.this, "Please enter valid email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final String password = editTextPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(password)) {
+                    //password field is empty
+                    Toast.makeText(MainActivity.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    editTextEmail.setText(" ");
-                                    editTextPassword.setText(" ");
+                                    editTextEmail.setText("");
+                                    editTextPassword.setText("");
                                     Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                     Toast.makeText(getApplicationContext(), "Login Not Successful", Toast.LENGTH_SHORT).show();
-                                    editTextEmail.setText(" ");
-                                    editTextPassword.setText(" ");
+                                    editTextEmail.setText("");
+                                    editTextPassword.setText("");
                                 }
 
                                 // ...
@@ -147,6 +169,39 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+
+        buttonForgot = findViewById(R.id.forgotpassButton);
+        buttonForgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = editTextEmail.getText().toString().trim();
+
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(getApplicationContext(), "Enter your email!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                mAuth.sendPasswordResetEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "Email sent.");
+                                    Toast.makeText(MainActivity.this, "Email Sent", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+            }
+        });
+
+    }
+
+    public void sendMessage(String email,String password){
+        Intent intent = new Intent(this,ProfileActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString("EMAIL",email);
+        extras.putString("PASSWORD",password);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
     @Override
     public void onStart() {
@@ -161,5 +216,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
