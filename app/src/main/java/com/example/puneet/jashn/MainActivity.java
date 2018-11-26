@@ -156,9 +156,6 @@ public class MainActivity extends AppCompatActivity {
                                     editTextPassword.setText("");
                                     Log.d(TAG, "signInWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    startActivity(new Intent(MainActivity.this,EventActivity.class));
-
-
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -205,11 +202,6 @@ public class MainActivity extends AppCompatActivity {
         extras.putString("PASSWORD",password);
         intent.putExtras(extras);
         startActivity(intent);
-    }
-
-    public  void goToHome(View v){
-        startActivity(new Intent(MainActivity.this,EventActivity.class));
-
     }
     @Override
     public void onStart() {

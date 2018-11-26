@@ -58,7 +58,6 @@
         android:layout_marginTop="32dp"
         android:background="#a4c639"
         android:text="@string/login"
-
         app:layout_constraintEnd_toEndOf="@+id/passwordButton"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/passwordButton"
