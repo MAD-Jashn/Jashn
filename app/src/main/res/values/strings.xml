@@ -15,11 +15,5 @@
     <string name="facebook_app_id">777111212631959</string>
     <string name="fb_login_protocol_scheme">fb777111212631959</string>
     <string name="photo">Photo</string>
-    <string-array name="event_category">
-        <item>Sports</item>
-        <item>Tech</item>
-        <item>Business</item>
-        <item>Party</item>
-    </string-array>
 
 </resources>
