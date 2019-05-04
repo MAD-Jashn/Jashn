@@ -9,4 +9,12 @@
 
     </style>
 
+    <style name="InvitationTextViewStyle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="InvitationTextValueStyle">
+
+    </style>
+
 </resources>
